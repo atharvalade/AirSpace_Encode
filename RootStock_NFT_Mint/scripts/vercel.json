@@ -1,14 +1,24 @@
 {
   "version": 2,
-  "functions": {
-    "api/*.py": {
-      "runtime": "python3.9"
+  "builds": [
+    {
+      "src": "api/*.py",
+      "use": "@vercel/python"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/nfts",
       "dest": "/api/nfts.py"
     }
-  ]
+  ],
+  "env": {
+    "PINATA_API_KEY": "ae1887d2ae1879a5bce9",
+    "PINATA_SECRET_KEY": "64836d99d93afc765fe5e5593ec6a86092527bcd680f5466f6f8549fb24144da",
+    "ALCHEMY_API_KEY": "l05qmoEsKgcOHBnYvDhWjJD8oRrrG0sw",
+    "PRIVATE_KEY": "bd1d533ee99db437945e4b233c94e087ef8c59d78301abf5b3102b6e1fabf3f2",
+    "CONTRACT_ADDRESS": "0x676AB843E8aDd6363779409Ee5057f4a26F46F59",
+    "WALLET_ADDRESS": "0xa20C96EA7B9AbAe32217EbA25577cDe099039D5D",
+    "HYPERINDEX_API_KEY": "175e4c1c-f8ef-4a4f-9558-7a34f413cc98"
+  }
 } 

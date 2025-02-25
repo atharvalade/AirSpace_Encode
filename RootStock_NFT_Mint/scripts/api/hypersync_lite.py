@@ -1,12 +1,8 @@
-from http.server import BaseHTTPRequestHandler
-from urllib.parse import parse_qs, urlparse
 import json
-import asyncio
 import os
-import sys
-import traceback
-
-# Import hypersync modules directly
+import asyncio
+from web3 import Web3
+import requests
 import hypersync
 from hypersync import (
     LogSelection,
@@ -14,11 +10,9 @@ from hypersync import (
     FieldSelection,
     TransactionField,
 )
-from web3 import Web3
-import requests
 
 # Define constants
-CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS", "0x676AB843E8aDd6363779409Ee5057f4a26F46F59")
+CONTRACT_ADDRESS = "0x676AB843E8aDd6363779409Ee5057f4a26F46F59"
 API_KEY = os.environ.get("HYPERINDEX_API_KEY", "")
 
 # ERC721 Transfer event signature
@@ -275,47 +269,35 @@ async def fetch_nfts_directly(wallet_address):
         except Exception as e:
             print(f"Error fetching metadata for token ID {token_id}: {e}")
     
-    return nft_details
+    return nft_details 
 
-# This is the Vercel serverless function handler
-class Handler(BaseHTTPRequestHandler):
-    async def do_GET_async(self):
-        # Parse query parameters
-        query_components = parse_qs(urlparse(self.path).query)
-        wallet_address = query_components.get('wallet', ['0xa20C96EA7B9AbAe32217EbA25577cDe099039D5D'])[0]
-        
-        try:
-            # Run the NFT fetching function
-            nft_details = await fetch_nfts(wallet_address)
-            
-            # Prepare the response
-            response_data = {
-                'data': nft_details,
-                'wallet': wallet_address
-            }
-            
-            # Send response
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Cache-Control', 'max-age=60')
-            self.end_headers()
-            self.wfile.write(json.dumps(response_data).encode())
-            
-        except Exception as e:
-            # Log the error
-            print(f"Error: {str(e)}")
-            print(traceback.format_exc())
-            
-            # Send error response
-            self.send_response(500)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps({
-                'error': str(e),
-                'message': 'Failed to fetch NFT data'
-            }).encode())
+if __name__ == "__main__":
+    # Get wallet address from environment variable
+    wallet_address = os.environ.get("WALLET_ADDRESS")
+    if not wallet_address:
+        print("Please set the WALLET_ADDRESS environment variable")
+        exit(1)
     
-    def do_GET(self):
-        asyncio.run(self.do_GET_async()) 
+    print(f"Starting NFT fetch for wallet: {wallet_address}")
+    
+    # Run the async function
+    nft_details = asyncio.run(fetch_nfts(wallet_address))
+    
+    # Save results to JSON file
+    output_file = f"wallet-nfts-{wallet_address[:8]}.json"
+    with open(output_file, 'w') as f:
+        json.dump(nft_details, f, indent=2)
+    
+    print(f"\nNFT details saved to {output_file}")
+    
+    # Display summary
+    if nft_details:
+        print("\n=== NFT SUMMARY ===")
+        print(f"Found {len(nft_details)} NFTs owned by {wallet_address}:")
+        
+        for i, nft in enumerate(nft_details):
+            print(f"\n{i+1}. Token ID: {nft['tokenId']}")
+            print(f"   Title: {nft['metadata'].get('title') or nft['metadata'].get('name')}")
+            print(f"   IPFS: {nft['ipfsHash']}")
+            if 'transactionHash' in nft:
+                print(f"   TX: {nft['transactionHash']}") 

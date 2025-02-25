@@ -30,12 +30,50 @@ export const ListingsGrid = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/nfts/');
+        const response = await fetch('https://apinft-zeta.vercel.app/api/nfts');
         if (!response.ok) {
           throw new Error('Failed to fetch listings');
         }
         const data = await response.json();
-        setListings(data); // Using the API response directly as it matches our NFT interface
+        
+        // Transform the API data to match our NFT interface
+        const formattedListings = data.data.map((item: any) => {
+          // Find property address, current height, max height, and price from attributes
+          const propertyAddress = item.metadata.attributes.find(
+            (attr: any) => attr.trait_type === "Property Address"
+          )?.value || "";
+          
+          const currentHeight = item.metadata.attributes.find(
+            (attr: any) => attr.trait_type === "Current Height"
+          )?.value || 0;
+          
+          const maxHeight = item.metadata.attributes.find(
+            (attr: any) => attr.trait_type === "Maximum Height"
+          )?.value || 0;
+          
+          const availableFloors = item.metadata.attributes.find(
+            (attr: any) => attr.trait_type === "Available Floors"
+          )?.value || 0;
+          
+          const price = item.metadata.attributes.find(
+            (attr: any) => attr.trait_type === "Price"
+          )?.value || 0;
+          
+          return {
+            token_id: item.tokenId.toString(),
+            title: item.metadata.title,
+            description: item.metadata.description,
+            property_address: propertyAddress,
+            current_height: `${currentHeight} floors`,
+            maximum_height: `${maxHeight} floors`,
+            available_floors: `${availableFloors} floors`,
+            price: price.toLocaleString(),
+            contract_address: "0x1234567890abcdef1234567890abcdef12345678",
+            image_url: getListingImage(item.metadata.title)
+          };
+        });
+        
+        setListings(formattedListings);
       } catch (err) {
         console.error('Error fetching listings:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch listings');
@@ -53,32 +91,7 @@ export const ListingsGrid = () => {
     setIsAgreementOpen(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/nft/agreement/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nft_token_id: nft.token_id, // Using token_id from API
-          nft_value: nft.price.replace(/,/g, ''),
-          buyer_address: BUYER_DETAILS.address,
-          seller_address: SELLER_DETAILS.address,
-          Seller_Physical: SELLER_DETAILS.physical_address,
-          Buyer_Physical: BUYER_DETAILS.physical_address,
-          Seller_Name: SELLER_DETAILS.name,
-          Buyer_Name: BUYER_DETAILS.name
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch agreement');
-      }
-
-      const data = await response.json();
-      setAgreementText(data.agreement);
-    } catch (err) {
-      console.error('Error fetching agreement:', err);
-      // Generate placeholder agreement instead of error message
+      // Generate placeholder agreement instead of fetching from API
       const placeholderAgreement = `
 **Agreement Between ${SELLER_DETAILS.name} and ${BUYER_DETAILS.name}: NFT Purchase Agreement for ${nft.title}**
 
@@ -121,6 +134,9 @@ Buyer: _________________ Date: _________________
 ${BUYER_DETAILS.name}
 `;
       setAgreementText(placeholderAgreement);
+    } catch (err) {
+      console.error('Error generating agreement:', err);
+      setAgreementText("Failed to generate agreement. Please try again.");
     } finally {
       setAgreementLoading(false);
     }
@@ -139,6 +155,8 @@ ${BUYER_DETAILS.name}
         return "/images/listings/sydney.png";
       case 'dubai':
         return "/images/listings/dubai.png";
+      case 'test':
+        return "/images/listings/test-property.png";
       default:
         return "/images/hero/banner-image.png";
     }
@@ -158,7 +176,7 @@ ${BUYER_DETAILS.name}
                 alt={listing.title}
                 fill
                 className="object-cover rounded-2xl"
-                priority={listing.token_id === 1}
+                priority={String(listing.token_id) === "1"}
               />
             </div>
             <div className="flex flex-col justify-between">
