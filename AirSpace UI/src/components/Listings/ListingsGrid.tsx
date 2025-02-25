@@ -4,6 +4,18 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NFT } from "@/types/nft";
 import { AgreementDialog } from "./AgreementDialog";
+import dynamic from 'next/dynamic';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+// Dynamically import the map component with no SSR
+const PropertyMapView = dynamic(() => import('./PropertyMapView'), {
+  ssr: false,
+  loading: () => (
+    <div className="relative h-[400px] rounded-2xl bg-darkmode/50 flex items-center justify-center">
+      <div className="text-white">Loading 3D Map...</div>
+    </div>
+  )
+});
 
 // Add these constants at the top of the file
 const SELLER_DETAILS = {
@@ -161,7 +173,7 @@ ${BUYER_DETAILS.name}
     const firstWord = title.split(' ')[0].toLowerCase();
     switch (firstWord) {
       case 'niagara':
-        return "/images/hero/banner-image.png"; // Keep existing Niagara image
+        return "/images/hero/banner-image.png";
       case 'vancouver':
         return "/images/listings/vancouver.png";
       case 'miami':
@@ -170,8 +182,6 @@ ${BUYER_DETAILS.name}
         return "/images/listings/sydney.png";
       case 'dubai':
         return "/images/listings/dubai.png";
-      case 'test':
-        return "/images/listings/test-property.png";
       default:
         return "/images/hero/banner-image.png";
     }
@@ -185,14 +195,9 @@ ${BUYER_DETAILS.name}
       <div className="grid gap-8">
         {listings.map((listing) => (
           <div key={listing.token_id} className="grid lg:grid-cols-2 gap-8 bg-dark_grey bg-opacity-35 rounded-3xl p-8">
-            <div className="relative h-[400px]">
-              <Image
-                src={getListingImage(listing.title)}
-                alt={listing.title}
-                fill
-                className="object-cover rounded-2xl"
-                priority={listing.token_id === 1}
-              />
+            <div className="relative h-[400px] rounded-2xl overflow-hidden">
+              {/* Replace static image with 3D map */}
+              <PropertyMapView nft={listing} />
             </div>
             <div className="flex flex-col justify-between">
               <div>
