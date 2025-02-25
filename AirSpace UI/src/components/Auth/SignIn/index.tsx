@@ -7,7 +7,11 @@ import toast from "react-hot-toast";
 import Logo from "@/components/Layout/Header/Logo"
 import Loader from "@/components/Common/Loader";
 
-const Signin = () => {
+interface SignInProps {
+  onSuccess?: () => void;
+}
+
+const Signin = ({ onSuccess }: SignInProps) => {
   const router = useRouter();
 
   const [loginData, setLoginData] = useState({
@@ -24,12 +28,28 @@ const Signin = () => {
     try {
       // Simulate a delay for the loading state
       setTimeout(() => {
-        toast.success("Successfully signed in with MetaMask (placeholder)");
-        router.push("/");
+        // Store authentication state in localStorage
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('walletAddress', '0x71C7656EC7ab88b098defB751B7401B5f6d8976F');
+        localStorage.setItem('userName', 'John Doe');
+        localStorage.setItem('usdcBalance', '15,420.65');
+        localStorage.setItem('physicalAddress', '350 5th Ave, New York, NY 10118');
+        
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new Event('authChange'));
+        
+        toast.success("Successfully signed in with MetaMask");
         setMetaMaskLoading(false);
+        
+        // Close modal if provided
+        if (onSuccess) {
+          onSuccess();
+        }
+        
+        router.push("/");
       }, 1000);
     } catch (error: any) {
-      toast.error("Failed to connect to MetaMask (placeholder)");
+      toast.error("Failed to connect to MetaMask");
       setMetaMaskLoading(false);
     }
   };
@@ -50,6 +70,12 @@ const Signin = () => {
         if (callback?.ok && !callback?.error) {
           toast.success("Login successful");
           setLoading(false);
+          
+          // Close modal if provided
+          if (onSuccess) {
+            onSuccess();
+          }
+          
           router.push("/");
         }
       })
@@ -113,7 +139,7 @@ const Signin = () => {
         </span>
       </span>
 
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={loginUser}>
         <div className="mb-[22px]">
           <input
             type="email"
@@ -136,7 +162,6 @@ const Signin = () => {
         </div>
         <div className="mb-9">
           <button
-            onClick={loginUser}
             type="submit"
             className="bg-primary w-full py-3 rounded-lg text-18 font-medium border border-primary hover:text-primary hover:bg-transparent"
           >

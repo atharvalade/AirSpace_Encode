@@ -14,6 +14,7 @@ interface Building {
   availableSqFt: number;
   airRightsVolume: number;
   viewProtected: boolean;
+  row: number; // Added row property to indicate position relative to falls
 }
 
 interface MapComponentProps {
@@ -56,16 +57,15 @@ const MapComponent = ({ buildings }: MapComponentProps) => {
     
     try {
       console.log("Initializing map...");
-      // Use a simpler map style to ensure it loads
       mapboxgl.accessToken = 'pk.eyJ1IjoiYXRoYXJ2YWxhZGUiLCJhIjoiY203azliYXBmMGYxbjJqcHJucHltamx1MSJ9.MIDkONe-6BnGL4vlCqCBjw';
       
       const mapInstance = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11', // Use light style for better 3D visibility
-        center: [-73.9857, 40.7484],
-        zoom: 16,
-        pitch: 60, // Higher pitch for better 3D view
-        bearing: -17.6,
+        style: 'mapbox://styles/mapbox/satellite-streets-v12',
+        center: [-79.0767, 43.0828], // Centered on Horseshoe Falls
+        zoom: 15.5,
+        pitch: 60,
+        bearing: 20, // Angled to face the falls
         antialias: true
       });
       
@@ -85,112 +85,214 @@ const MapComponent = ({ buildings }: MapComponentProps) => {
         
         // Immediately add 3D buildings after map loads
         try {
-          // Create placeholder data for Empire State Building
-          const empireStateBuilding = {
-            id: 1,
-            name: "Empire State Building",
-            coordinates: [-73.9857, 40.7484] as [number, number],
-            height: 381,
-            pricePerSqFt: 582.24,
-            availableSqFt: 15000,
-            airRightsVolume: 250000,
-            viewProtected: true
-          };
-          
-          // Create a GeoJSON polygon for the Empire State Building footprint
-          const buildingFootprint: GeoJSON.Feature = {
-            type: 'Feature',
-            geometry: {
-              type: 'Polygon',
-              coordinates: [[
-                [-73.9865, 40.7478],
-                [-73.9865, 40.7490],
-                [-73.9849, 40.7490],
-                [-73.9849, 40.7478],
-                [-73.9865, 40.7478]
-              ]]
+          // Create data for Niagara Falls buildings with two rows
+          // First row (closer to falls) - shorter buildings
+          // Second row (further from falls) - taller buildings that need view protection
+          const niagaraBuildings = [
+            // First row buildings (closer to falls)
+            {
+              id: 1,
+              name: "Queen Victoria Place",
+              coordinates: [-79.0790, 43.0805] as [number, number],
+              height: 25, // Shorter building in first row
+              pricePerSqFt: 520.50,
+              availableSqFt: 15000,
+              airRightsVolume: 120000,
+              viewProtected: false,
+              row: 1,
+              footprint: [
+                [-79.0795, 43.0800],
+                [-79.0795, 43.0810],
+                [-79.0785, 43.0810],
+                [-79.0785, 43.0800],
+                [-79.0795, 43.0800]
+              ]
             },
-            properties: empireStateBuilding
-          };
-          
-          // Add source for the building footprint
-          mapInstance.addSource('empire-state-building', {
-            type: 'geojson',
-            data: buildingFootprint
-          });
-          
-          // Add 3D building extrusion
-          mapInstance.addLayer({
-            'id': 'empire-state-building-3d',
-            'source': 'empire-state-building',
-            'type': 'fill-extrusion',
-            'paint': {
-              'fill-extrusion-color': '#1a2030',
-              'fill-extrusion-height': empireStateBuilding.height,
-              'fill-extrusion-base': 0,
-              'fill-extrusion-opacity': 0.9
+            {
+              id: 2,
+              name: "Table Rock Centre",
+              coordinates: [-79.0810, 43.0795] as [number, number],
+              height: 20, // Shorter building in first row
+              pricePerSqFt: 495.75,
+              availableSqFt: 12500,
+              airRightsVolume: 100000,
+              viewProtected: true, // Already protected
+              row: 1,
+              footprint: [
+                [-79.0815, 43.0790],
+                [-79.0815, 43.0800],
+                [-79.0805, 43.0800],
+                [-79.0805, 43.0790],
+                [-79.0815, 43.0790]
+              ]
+            },
+            {
+              id: 3,
+              name: "Nikola Tesla Plaza",
+              coordinates: [-79.0775, 43.0815] as [number, number],
+              height: 15, // Shortest building in first row
+              pricePerSqFt: 550.80,
+              availableSqFt: 18000,
+              airRightsVolume: 150000,
+              viewProtected: false, // Available for air rights purchase
+              row: 1,
+              footprint: [
+                [-79.0780, 43.0810],
+                [-79.0780, 43.0820],
+                [-79.0770, 43.0820],
+                [-79.0770, 43.0810],
+                [-79.0780, 43.0810]
+              ]
+            },
+            
+            // Second row buildings (further from falls)
+            {
+              id: 4,
+              name: "Fallsview Casino Resort",
+              coordinates: [-79.0795, 43.0835] as [number, number],
+              height: 45, // Taller building in second row
+              pricePerSqFt: 425.30,
+              availableSqFt: 9200,
+              airRightsVolume: 80000,
+              viewProtected: true, // Has protected view
+              row: 2,
+              footprint: [
+                [-79.0800, 43.0830],
+                [-79.0800, 43.0840],
+                [-79.0790, 43.0840],
+                [-79.0790, 43.0830],
+                [-79.0800, 43.0830]
+              ]
+            },
+            {
+              id: 5,
+              name: "Sheraton on the Falls",
+              coordinates: [-79.0775, 43.0845] as [number, number],
+              height: 50, // Taller building in second row
+              pricePerSqFt: 467.80,
+              availableSqFt: 11500,
+              airRightsVolume: 95000,
+              viewProtected: false, // Needs view protection
+              row: 2,
+              footprint: [
+                [-79.0780, 43.0840],
+                [-79.0780, 43.0850],
+                [-79.0770, 43.0850],
+                [-79.0770, 43.0840],
+                [-79.0780, 43.0840]
+              ]
+            },
+            {
+              id: 6,
+              name: "6430 Niagara River Parkway",
+              coordinates: [-79.0755, 43.0855] as [number, number],
+              height: 55, // Tallest building in second row
+              pricePerSqFt: 482.50,
+              availableSqFt: 14000,
+              airRightsVolume: 110000,
+              viewProtected: true, // Has protected view
+              row: 2,
+              footprint: [
+                [-79.0760, 43.0850],
+                [-79.0760, 43.0860],
+                [-79.0750, 43.0860],
+                [-79.0750, 43.0850],
+                [-79.0760, 43.0850]
+              ]
             }
-          });
+          ];
           
-          // Add air rights volume visualization
-          mapInstance.addLayer({
-            'id': 'air-rights-volume',
-            'source': 'empire-state-building',
-            'type': 'fill-extrusion',
-            'paint': {
-              'fill-extrusion-color': '#4CAF50',
-              'fill-extrusion-height': empireStateBuilding.height + empireStateBuilding.airRightsVolume/100,
-              'fill-extrusion-base': empireStateBuilding.height,
-              'fill-extrusion-opacity': 0.4
-            }
-          });
-          
-          // Add a marker for the building
-          mapInstance.addSource('building-point', {
-            type: 'geojson',
-            data: {
+          // Add each building to the map
+          niagaraBuildings.forEach(building => {
+            // Create a GeoJSON polygon for the building footprint
+            const buildingFootprint: GeoJSON.Feature = {
               type: 'Feature',
               geometry: {
-                type: 'Point',
-                coordinates: empireStateBuilding.coordinates
+                type: 'Polygon',
+                coordinates: [building.footprint]
               },
-              properties: empireStateBuilding
-            } as GeoJSON.Feature
-          });
-          
-          mapInstance.addLayer({
-            id: 'building-marker',
-            type: 'circle',
-            source: 'building-point',
-            paint: {
-              'circle-radius': 8,
-              'circle-color': '#4CAF50',
-              'circle-opacity': 0.9,
-              'circle-stroke-width': 2,
-              'circle-stroke-color': '#fff'
-            }
-          });
-          
-          // Add hover effect
-          mapInstance.on('mousemove', 'building-marker', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
-            if (e.features && e.features.length > 0) {
-              const feature = e.features[0];
-              if (feature.properties) {
-                mapInstance.getCanvas().style.cursor = 'pointer';
-                setPopupInfo(feature.properties as Building);
-                setPopupCoordinates(empireStateBuilding.coordinates);
-                
-                // Highlight air rights
-                mapInstance.setPaintProperty('air-rights-volume', 'fill-extrusion-opacity', 0.7);
+              properties: building
+            };
+            
+            // Add source for the building footprint
+            mapInstance.addSource(`building-${building.id}`, {
+              type: 'geojson',
+              data: buildingFootprint
+            });
+            
+            // Add 3D building extrusion
+            mapInstance.addLayer({
+              'id': `building-${building.id}-3d`,
+              'source': `building-${building.id}`,
+              'type': 'fill-extrusion',
+              'paint': {
+                'fill-extrusion-color': building.row === 1 ? '#1a2030' : '#2a3040',
+                'fill-extrusion-height': building.height,
+                'fill-extrusion-base': 0,
+                'fill-extrusion-opacity': 0.9
               }
-            }
-          });
-          
-          mapInstance.on('mouseleave', 'building-marker', () => {
-            mapInstance.getCanvas().style.cursor = '';
-            setPopupInfo(null);
-            setPopupCoordinates(null);
-            mapInstance.setPaintProperty('air-rights-volume', 'fill-extrusion-opacity', 0.4);
+            });
+            
+            // Add air rights volume visualization
+            mapInstance.addLayer({
+              'id': `air-rights-${building.id}`,
+              'source': `building-${building.id}`,
+              'type': 'fill-extrusion',
+              'paint': {
+                'fill-extrusion-color': building.viewProtected ? '#4CAF50' : '#FFA500',
+                'fill-extrusion-height': building.height + building.airRightsVolume/5000, // Scaled for visibility
+                'fill-extrusion-base': building.height,
+                'fill-extrusion-opacity': 0.4
+              }
+            });
+            
+            // Add a marker for the building
+            mapInstance.addSource(`building-point-${building.id}`, {
+              type: 'geojson',
+              data: {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: building.coordinates
+                },
+                properties: building
+              } as GeoJSON.Feature
+            });
+            
+            mapInstance.addLayer({
+              id: `building-marker-${building.id}`,
+              type: 'circle',
+              source: `building-point-${building.id}`,
+              paint: {
+                'circle-radius': 8,
+                'circle-color': building.viewProtected ? '#4CAF50' : '#FFA500',
+                'circle-opacity': 0.9,
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#fff'
+              }
+            });
+            
+            // Add hover effect
+            mapInstance.on('mousemove', `building-marker-${building.id}`, (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
+              if (e.features && e.features.length > 0) {
+                const feature = e.features[0];
+                if (feature.properties) {
+                  mapInstance.getCanvas().style.cursor = 'pointer';
+                  setPopupInfo(feature.properties as Building);
+                  setPopupCoordinates(building.coordinates);
+                  
+                  // Highlight air rights
+                  mapInstance.setPaintProperty(`air-rights-${building.id}`, 'fill-extrusion-opacity', 0.7);
+                }
+              }
+            });
+            
+            mapInstance.on('mouseleave', `building-marker-${building.id}`, () => {
+              mapInstance.getCanvas().style.cursor = '';
+              setPopupInfo(null);
+              setPopupCoordinates(null);
+              mapInstance.setPaintProperty(`air-rights-${building.id}`, 'fill-extrusion-opacity', 0.4);
+            });
           });
           
           // Add navigation control
@@ -274,9 +376,13 @@ const MapComponent = ({ buildings }: MapComponentProps) => {
                   {popupInfo.viewProtected ? 'View Protected' : 'Unprotected View'}
                 </span>
               </div>
+              <div className="col-span-2">
+                <span className="text-muted">Position:</span>
+                <span className="ml-1">Row {popupInfo.row} {popupInfo.row === 1 ? '(Falls-facing)' : '(Second row)'}</span>
+              </div>
             </div>
             <button className="mt-3 bg-primary text-darkmode px-4 py-2 rounded-lg text-sm w-full font-medium hover:bg-primary/90 transition-colors pointer-events-auto">
-              Buy Air Rights
+              {popupInfo.row === 1 && !popupInfo.viewProtected ? 'Sell Air Rights' : 'Buy Air Rights'}
             </button>
           </div>
           <div className="w-4 h-4 bg-darkmode/90 transform rotate-45 mx-auto -mt-2 border-r border-b border-primary/30"></div>
@@ -284,18 +390,18 @@ const MapComponent = ({ buildings }: MapComponentProps) => {
       )}
       
       {/* Overlay elements */}
-      <div className="absolute top-4 left-4 bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm">
+      <div className="absolute top-4 left-4 bg-darkmode/50 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm">
         <span className="flex items-center">
           <Icon icon="ph:info-bold" className="mr-2" /> Hover over buildings to see air rights details
         </span>
       </div>
       
       <div className="absolute bottom-4 left-4 flex gap-3">
-        <div className="bg-primary/20 backdrop-blur-sm p-2 rounded-lg border border-primary/30 text-white text-sm flex items-center">
+        <div className="bg-darkmode/50 backdrop-blur-sm p-2 rounded-lg border border-primary/30 text-white text-sm flex items-center">
           <div className="w-3 h-3 rounded-full bg-green-400 mr-2"></div>
           <span>Protected View</span>
         </div>
-        <div className="bg-primary/20 backdrop-blur-sm p-2 rounded-lg border border-primary/30 text-white text-sm flex items-center">
+        <div className="bg-darkmode/50 backdrop-blur-sm p-2 rounded-lg border border-primary/30 text-white text-sm flex items-center">
           <div className="w-3 h-3 rounded-full bg-orange-400 mr-2"></div>
           <span>Unprotected View</span>
         </div>

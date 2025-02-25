@@ -6,23 +6,44 @@ import Logo from "@/components/Layout/Header/Logo";
 import { useState } from "react";
 import Loader from "@/components/Common/Loader";
 
-const SignUp = () => {
+interface SignUpProps {
+  onSuccess?: () => void;
+}
+
+const SignUp = ({ onSuccess }: SignUpProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [metaMaskLoading, setMetaMaskLoading] = useState(false);
   
   // Placeholder MetaMask connection handler
   const connectMetaMask = async () => {
-    setLoading(true);
+    setMetaMaskLoading(true);
     try {
       // Simulate a delay for the loading state
       setTimeout(() => {
-        toast.success("Successfully connected with MetaMask (placeholder)");
-        router.push("/signin");
-        setLoading(false);
+        // Store authentication state in localStorage
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('walletAddress', '0x71C7656EC7ab88b098defB751B7401B5f6d8976F');
+        localStorage.setItem('userName', 'John Doe');
+        localStorage.setItem('usdcBalance', '15,420.65');
+        localStorage.setItem('physicalAddress', '350 5th Ave, New York, NY 10118');
+        
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new Event('authChange'));
+        
+        toast.success("Successfully signed up with MetaMask");
+        setMetaMaskLoading(false);
+        
+        // Close modal if provided
+        if (onSuccess) {
+          onSuccess();
+        }
+        
+        router.push("/");
       }, 1000);
     } catch (error: any) {
-      toast.error("Failed to connect to MetaMask (placeholder)");
-      setLoading(false);
+      toast.error("Failed to connect to MetaMask");
+      setMetaMaskLoading(false);
     }
   };
 
@@ -45,6 +66,12 @@ const SignUp = () => {
       .then((data) => {
         toast.success("Successfully registered");
         setLoading(false);
+        
+        // Close modal if provided
+        if (onSuccess) {
+          onSuccess();
+        }
+        
         router.push("/signin");
       })
       .catch((err) => {
@@ -63,7 +90,7 @@ const SignUp = () => {
       <div className="mb-6">
         <button
           onClick={connectMetaMask}
-          className="flex w-full items-center justify-center gap-3 rounded-md border border-dark_border border-opacity-60 bg-transparent px-5 py-3 text-base text-white transition hover:border-primary hover:bg-primary/20"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-18 font-medium border border-dark_border border-opacity-60 hover:border-primary hover:text-primary"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M21.315 3L13.039 8.38L14.603 5.131L21.315 3Z" fill="#E2761B" stroke="#E2761B" strokeWidth="0.1" strokeLinecap="round" strokeLinejoin="round"/>
@@ -96,7 +123,7 @@ const SignUp = () => {
             <path d="M7.551 11.072L3.189 12.43L1.746 16.968H5.664L8.183 17.001L6.199 13.233L7.551 11.072Z" fill="#F6851B" stroke="#F6851B" strokeWidth="0.1" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M13.039 13.443L13.409 8.23L14.603 5.131H9.397L10.583 8.23L10.969 13.443L11.086 14.541L11.094 18.362H12.898L12.914 14.541L13.039 13.443Z" fill="#F6851B" stroke="#F6851B" strokeWidth="0.1" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          Sign Up with MetaMask {loading && <Loader />}
+          Sign Up with MetaMask {metaMaskLoading && <Loader />}
         </button>
       </div>
 
@@ -156,8 +183,8 @@ const SignUp = () => {
       </p>
 
       <p className="text-body-secondary text-white text-base">
-        Already have an account?
-        <Link href="/" className="pl-2 text-primary hover:underline">
+        Already have an account?{" "}
+        <Link href="/signin" className="text-primary hover:underline">
           Sign In
         </Link>
       </p>

@@ -8,9 +8,12 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import dynamic from 'next/dynamic';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import Logo from "@/components/Layout/Header/Logo";
 
 // Dynamically import the map component with no SSR
-const MapComponent = dynamic(() => import('@/components/Home/Hero/map-component').then(mod => mod.default), {
+const MapComponent = dynamic(() => import('./map-component').then(mod => mod.default), {
   ssr: false,
   loading: () => (
     <div className="w-full h-[500px] rounded-xl bg-darkmode/50 flex items-center justify-center">
@@ -74,10 +77,16 @@ const SAMPLE_BUILDINGS = [
 ];
 
 const Hero = () => {
+  const router = useRouter();
   const [isBuying, setIsBuyingOpen] = useState(false);
   const [isSelling, setIsSellingOpen] = useState(false);
   const BuyRef = useRef<HTMLDivElement>(null);
   const SellRef = useRef<HTMLDivElement>(null);
+  const [listingData, setListingData] = useState({
+    physicalAddress: "",
+    pricePerSqft: ""
+  });
+  const [loading, setLoading] = useState(false);
 
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
@@ -114,6 +123,24 @@ const Hero = () => {
         staggerChildren: 0.1
       }
     }
+  };
+
+  const handleBuyClick = () => {
+    router.push("/listings");
+  };
+
+  const handleListingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      console.log("Listing submitted:", listingData);
+      toast.success("Property submitted for verification");
+      setIsSellingOpen(false);
+      setListingData({ physicalAddress: "", pricePerSqft: "" });
+      setLoading(false);
+    }, 1500);
   };
 
   return (
@@ -170,7 +197,7 @@ const Hero = () => {
           className="flex flex-wrap justify-center gap-6 mt-10 mb-16"
         >
           <button
-            onClick={() => setIsBuyingOpen(true)}
+            onClick={handleBuyClick}
             className="bg-primary hover:bg-primary/90 border border-primary rounded-lg text-lg font-medium text-darkmode py-3 px-8 transition-all duration-300 flex items-center shadow-glow-sm hover:shadow-glow"
           >
             <Icon icon="ph:shopping-cart" className="mr-2 text-xl" /> Buy Air Rights
@@ -235,46 +262,81 @@ const Hero = () => {
         </motion.div>
       </div>
 
-      {/* Modals for Buy and Sell with improved styling */}
-      {isBuying && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            ref={BuyRef}
-            className="relative w-full max-w-md overflow-hidden rounded-xl p-8 z-999 text-center bg-gradient-to-br from-dark_grey to-darkmode/90 backdrop-blur-md border border-dark_border/30 shadow-2xl"
-          >
-            <button
-              onClick={() => setIsBuyingOpen(false)}
-              className="absolute top-4 right-4 text-white hover:text-primary transition-colors"
-              aria-label="Close Buy Modal"
-            >
-              <Icon icon="ph:x-circle" className="text-2xl" />
-            </button>
-            <BuyCrypto />
-          </motion.div>
-        </div>
-      )}
-
+      {/* List Property Modal */}
       {isSelling && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            ref={SellRef}
-            className="relative w-full max-w-md overflow-hidden rounded-xl p-8 z-999 text-center bg-gradient-to-br from-dark_grey to-darkmode/90 backdrop-blur-md border border-dark_border/30 shadow-2xl"
-          >
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg px-8 pt-14 pb-8 text-center bg-dark_grey bg-opacity-90 backdrop-blur-md">
             <button
               onClick={() => setIsSellingOpen(false)}
-              className="absolute top-4 right-4 text-white hover:text-primary transition-colors"
-              aria-label="Close Sell Modal"
+              className="absolute right-4 top-4 text-white hover:text-primary"
             >
-              <Icon icon="ph:x-circle" className="text-2xl" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10L18.625 2.375C18.9062 2.09375 18.9062 1.65625 18.625 1.375C18.3438 1.09375 17.9062 1.09375 17.625 1.375L10 9L2.375 1.375C2.09375 1.09375 1.65625 1.09375 1.375 1.375C1.09375 1.65625 1.09375 2.09375 1.375 2.375L9 10L1.375 17.625C1.09375 17.9062 1.09375 18.3438 1.375 18.625C1.5 18.75 1.6875 18.8438 1.875 18.8438C2.0625 18.8438 2.25 18.7812 2.375 18.625L10 11L17.625 18.625C17.75 18.75 17.9375 18.8438 18.125 18.8438C18.3125 18.8438 18.5 18.7812 18.625 18.625C18.9062 18.3438 18.9062 17.9062 18.625 17.625L11 10Z"
+                  fill="currentColor"
+                />
+              </svg>
             </button>
-            <SellCrypto />
-          </motion.div>
+            
+            <div className="mb-10 text-center mx-auto inline-block max-w-[160px]">
+              <Logo />
+            </div>
+            
+            <h2 className="text-white text-xl font-medium mb-6">List Your Property</h2>
+            
+            <form onSubmit={handleListingSubmit}>
+              <div className="mb-[22px]">
+                <input
+                  type="text"
+                  placeholder="Physical Address of Building"
+                  value={listingData.physicalAddress}
+                  onChange={(e) => setListingData({...listingData, physicalAddress: e.target.value})}
+                  required
+                  className="w-full rounded-md border border-dark_border border-opacity-60 border-solid bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-grey focus:border-primary focus-visible:shadow-none text-white dark:focus:border-primary"
+                />
+              </div>
+              
+              <div className="mb-[22px]">
+                <input
+                  type="number"
+                  placeholder="Expected Price per sqft (USDC)"
+                  value={listingData.pricePerSqft}
+                  onChange={(e) => setListingData({...listingData, pricePerSqft: e.target.value})}
+                  required
+                  className="w-full rounded-md border border-dark_border border-opacity-60 border-solid bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-grey focus:border-primary focus-visible:shadow-none text-white dark:focus:border-primary"
+                />
+              </div>
+              
+              <div className="mb-6">
+                <button
+                  type="submit"
+                  className="flex w-full items-center text-18 font-medium justify-center rounded-md bg-primary px-5 py-3 text-darkmode transition duration-300 ease-in-out hover:bg-transparent hover:text-primary border-primary border"
+                >
+                  {loading ? (
+                    <div className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-darkmode" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </div>
+                  ) : (
+                    "Submit for Verification"
+                  )}
+                </button>
+              </div>
+            </form>
+            
+            <p className="text-body-secondary text-white text-sm">
+              Our team will verify your property details and contact you within 2-3 business days.
+            </p>
+          </div>
         </div>
       )}
       
