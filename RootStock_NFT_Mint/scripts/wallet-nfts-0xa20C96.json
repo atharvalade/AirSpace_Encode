@@ -1,0 +1,224 @@
+[
+  {
+    "tokenId": 1,
+    "ipfsHash": "QmPPuTMMzN9CGg89fwsrbrwdj2NNvpLvZdk5YZRSmXu5tv",
+    "metadata": {
+      "title": "Test Property RSK",
+      "name": "AirSpace - Test Property RSK",
+      "description": "Test NFT on Rootstock Network",
+      "attributes": [
+        {
+          "trait_type": "Property Address",
+          "value": "123 RSK Street, TestCity"
+        },
+        {
+          "trait_type": "Current Height",
+          "value": 10
+        },
+        {
+          "trait_type": "Maximum Height",
+          "value": 20
+        },
+        {
+          "trait_type": "Available Floors",
+          "value": 10
+        },
+        {
+          "trait_type": "Price",
+          "value": 100000
+        }
+      ],
+      "properties": {
+        "coordinates": {
+          "latitude": 43.0962,
+          "longitude": -79.0377
+        }
+      }
+    }
+  },
+  {
+    "tokenId": 2,
+    "ipfsHash": "QmUhnjFEszhg6Qkk6hQYNQxKK1Ghhn6DRM26CjLXFv18RY",
+    "metadata": {
+      "title": "Niagara Falls Hotel View Rights",
+      "name": "AirSpace - Niagara Falls Hotel View Rights",
+      "description": "Secure the pristine view of Niagara Falls by purchasing air rights above the existing hotel structure. Prime location with unobstructed views of the falls.",
+      "attributes": [
+        {
+          "trait_type": "Property Address",
+          "value": "6650 Niagara Parkway, Niagara Falls, ON L2G 0L0"
+        },
+        {
+          "trait_type": "Current Height",
+          "value": 10
+        },
+        {
+          "trait_type": "Maximum Height",
+          "value": 25
+        },
+        {
+          "trait_type": "Available Floors",
+          "value": 15
+        },
+        {
+          "trait_type": "Price",
+          "value": 250000
+        }
+      ],
+      "properties": {
+        "coordinates": {
+          "latitude": 43.0962,
+          "longitude": -79.0377
+        }
+      }
+    }
+  },
+  {
+    "tokenId": 3,
+    "ipfsHash": "QmU8jp4JuC2RBhF29Pcfa7pr1S6PBVNGCWd2o6xoUaKJbL",
+    "metadata": {
+      "title": "Vancouver Harbor View Rights",
+      "name": "AirSpace - Vancouver Harbor View Rights",
+      "description": "Protect your panoramic view of Vancouver's harbor and North Shore mountains. Strategic location in downtown Vancouver.",
+      "attributes": [
+        {
+          "trait_type": "Property Address",
+          "value": "1128 West Georgia Street, Vancouver, BC V6E 0A8"
+        },
+        {
+          "trait_type": "Current Height",
+          "value": 15
+        },
+        {
+          "trait_type": "Maximum Height",
+          "value": 30
+        },
+        {
+          "trait_type": "Available Floors",
+          "value": 15
+        },
+        {
+          "trait_type": "Price",
+          "value": 375000
+        }
+      ],
+      "properties": {
+        "coordinates": {
+          "latitude": 49.2827,
+          "longitude": -123.1207
+        }
+      }
+    }
+  },
+  {
+    "tokenId": 4,
+    "ipfsHash": "QmbYkr6Jy4J8kA5KNBrb34AjukKHNmRNAkBMxMrJYtE22W",
+    "metadata": {
+      "title": "Miami Beach Oceanfront Rights",
+      "name": "AirSpace - Miami Beach Oceanfront Rights",
+      "description": "Preserve your ocean view in South Beach Miami. Excellent opportunity to secure views of the Atlantic Ocean.",
+      "attributes": [
+        {
+          "trait_type": "Property Address",
+          "value": "1100 Collins Avenue, Miami Beach, FL 33139"
+        },
+        {
+          "trait_type": "Current Height",
+          "value": 8
+        },
+        {
+          "trait_type": "Maximum Height",
+          "value": 20
+        },
+        {
+          "trait_type": "Available Floors",
+          "value": 12
+        },
+        {
+          "trait_type": "Price",
+          "value": 420000
+        }
+      ],
+      "properties": {
+        "coordinates": {
+          "latitude": 25.7825,
+          "longitude": -80.134
+        }
+      }
+    }
+  },
+  {
+    "tokenId": 5,
+    "ipfsHash": "QmchGmwDxuVNEVhS3h5s6i7JejghudE6rs7CvxtPvhKxkA",
+    "metadata": {
+      "title": "Sydney Opera House View Rights",
+      "name": "AirSpace - Sydney Opera House View Rights",
+      "description": "Once-in-a-lifetime opportunity to secure air rights with direct views of the Sydney Opera House and Harbor Bridge.",
+      "attributes": [
+        {
+          "trait_type": "Property Address",
+          "value": "71 Macquarie Street, Sydney NSW 2000"
+        },
+        {
+          "trait_type": "Current Height",
+          "value": 12
+        },
+        {
+          "trait_type": "Maximum Height",
+          "value": 28
+        },
+        {
+          "trait_type": "Available Floors",
+          "value": 16
+        },
+        {
+          "trait_type": "Price",
+          "value": 580000
+        }
+      ],
+      "properties": {
+        "coordinates": {
+          "latitude": -33.8568,
+          "longitude": 151.2153
+        }
+      }
+    }
+  },
+  {
+    "tokenId": 6,
+    "ipfsHash": "QmZBaAKRXwMqLEWYLMWW9w2BR69mGxkrXCHkmrtzxTK5xW",
+    "metadata": {
+      "title": "Dubai Marina View Rights",
+      "name": "AirSpace - Dubai Marina View Rights",
+      "description": "Secure spectacular views of Dubai Marina and the Arabian Gulf. Premium location in the heart of New Dubai.",
+      "attributes": [
+        {
+          "trait_type": "Property Address",
+          "value": "Dubai Marina, Plot No. JLT-PH2-T2A Dubai, UAE"
+        },
+        {
+          "trait_type": "Current Height",
+          "value": 20
+        },
+        {
+          "trait_type": "Maximum Height",
+          "value": 45
+        },
+        {
+          "trait_type": "Available Floors",
+          "value": 25
+        },
+        {
+          "trait_type": "Price",
+          "value": 680000
+        }
+      ],
+      "properties": {
+        "coordinates": {
+          "latitude": 25.0657,
+          "longitude": 55.1403
+        }
+      }
+    }
+  }
+]
