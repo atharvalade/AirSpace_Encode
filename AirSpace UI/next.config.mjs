@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     domains: ['www.airspace.com'],
+    unoptimized: true
   },
   async rewrites() {
     return [
