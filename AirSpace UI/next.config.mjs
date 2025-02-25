@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['www.airspace.com'],
-    unoptimized: true
+    domains: ['www.airspace.com']
   },
   async rewrites() {
     return [

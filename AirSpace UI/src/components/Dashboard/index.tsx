@@ -134,7 +134,7 @@ const Dashboard = () => {
 
           return {
             id: item.tokenId,
-            tokenId: item.tokenId,
+            token_id: item.tokenId,
             title: item.metadata.title,
             name: item.metadata.name,
             description: item.metadata.description,
@@ -150,6 +150,7 @@ const Dashboard = () => {
             latitude: item.metadata.properties.coordinates.latitude,
             longitude: item.metadata.properties.coordinates.longitude,
             contract_address: "0x676AB843E8aDd6363779409Ee5057f4a26F46F59", // Using the contract address from DeploymentProgress.tsx
+            token_id: item.tokenId,
           };
         });
 
