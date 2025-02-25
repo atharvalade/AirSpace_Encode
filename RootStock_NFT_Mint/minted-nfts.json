@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Niagara Falls Hotel View Rights",
+    "tokenId": "2",
+    "ipfsHash": "QmUhnjFEszhg6Qkk6hQYNQxKK1Ghhn6DRM26CjLXFv18RY",
+    "transactionHash": "0xa8640c7cc318aec07c540f0d4f88ca1bb7ba47c64a73d26aedd3aa63e0e9a151"
+  },
+  {
+    "title": "Vancouver Harbor View Rights",
+    "tokenId": "3",
+    "ipfsHash": "QmU8jp4JuC2RBhF29Pcfa7pr1S6PBVNGCWd2o6xoUaKJbL",
+    "transactionHash": "0xcf8fe76dc40be3f69318a2bc8115bc95ae8f714e5ac3b6ea1430845a01071b19"
+  },
+  {
+    "title": "Miami Beach Oceanfront Rights",
+    "tokenId": "4",
+    "ipfsHash": "QmbYkr6Jy4J8kA5KNBrb34AjukKHNmRNAkBMxMrJYtE22W",
+    "transactionHash": "0x3ba885aaadbe577a6af48dfde9e8959e69e1f61292e1cb1a9043915ef290ccd5"
+  },
+  {
+    "title": "Sydney Opera House View Rights",
+    "tokenId": "5",
+    "ipfsHash": "QmchGmwDxuVNEVhS3h5s6i7JejghudE6rs7CvxtPvhKxkA",
+    "transactionHash": "0x1c8b3fa117c1d27416f28385f7416fc80e3ad0683c9fcaf22c7aeceee8a09062"
+  },
+  {
+    "title": "Dubai Marina View Rights",
+    "tokenId": "6",
+    "ipfsHash": "QmZBaAKRXwMqLEWYLMWW9w2BR69mGxkrXCHkmrtzxTK5xW",
+    "transactionHash": "0x050305c2df0d89e336aff5e800cca60b1980c55db775ba773321f81b4d9e8444"
+  }
+]
