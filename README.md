@@ -40,5 +40,3 @@ Developed by **Atharva**, this project was built from scratch with a fully funct
 
 ## 🌎 Join the Future of Real Estate
 Air rights are **real-world assets** that have never been tokenized at scale—until now. **Be part of the revolution.**
-
-🔗 [Website](#) | 📄 [Whitepaper](#) | 📬 [Contact](#)
