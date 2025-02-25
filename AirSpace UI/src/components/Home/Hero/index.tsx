@@ -36,119 +36,287 @@ const Hero = () => {
     document.body.style.overflow = isBuying || isSelling ? "hidden" : "";
   }, [isBuying, isSelling]);
 
-  const leftAnimation = {
-    initial: { x: "-100%", opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: "-100%", opacity: 0 },
-    transition: { duration: 0.6 },
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
   };
 
-  const rightAnimation = {
-    initial: { x: "100%", opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    exit: { x: "100%", opacity: 0 },
-    transition: { duration: 0.6 },
+  const staggerChildren = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
   };
 
   return (
     <section
-      className="relative md:pt-56 pt-20 pb-48 overflow-hidden"
+      className="relative pt-40 pb-32 overflow-hidden"
       id="main-banner"
     >
-      <div className="container mx-auto lg:max-w-screen-xl px-4">
-        <div className="grid grid-cols-12">
-          <motion.div {...leftAnimation} className="lg:col-span-5 col-span-12">
-            <div className="flex gap-6 items-center lg:justify-start justify-center mb-5 mt-24">
-              <Image
-                src="/images/icons/icon-bag.svg"
-                alt="icon"
-                width={40}
-                height={40}
-              />
-              <p className="text-white sm:text-28 text-18 mb-0">
-                Air Rights <span className="text-primary">Tokenization</span>
-              </p>
-            </div>
-            <h1 className="font-medium lg:text-76 md:text-70 text-54 lg:text-start text-center text-white mb-10">
-              Secure Your <span className="text-primary">View</span> with{" "}
-              <span className="text-primary">Blockchain</span>!
-            </h1>
-            <div className="flex items-center md:justify-start justify-center gap-8">
-              <button
-                className="bg-primary border border-primary rounded-lg text-21 font-medium hover:bg-transparent hover:text-primary text-darkmode py-2 px-7 z-50"
-                onClick={() => setIsBuyingOpen(true)}
-              >
-                Buy Air Rights
-              </button>
-              <button
-                className="bg-transparent border border-primary rounded-lg text-21 font-medium hover:bg-primary hover:text-darkmode text-primary py-2 px-7"
-                onClick={() => setIsSellingOpen(true)}
-              >
-                List Property
-              </button>
-            </div>
-          </motion.div>
-          <motion.div
-            {...rightAnimation}
-            className="col-span-7 lg:block hidden"
-          >
-            <div className="ml-20">
-              <Image
-                src="/images/hero/banner-image.png"
-                alt="Banner"
-                width={1150}
-                height={1150}
-                priority
-                className="rounded-3xl"
-              />
-            </div>
-          </motion.div>
-        </div>
+      {/* Animated background elements */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-0 right-0 w-2/3 h-2/3 bg-gradient-to-bl from-primary/20 to-transparent rounded-full blur-[120px] transform translate-x-1/3 -translate-y-1/3 animate-pulse-slow"></div>
+        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-[100px] transform -translate-x-1/3 translate-y-1/3 animate-pulse-slow animation-delay-2000"></div>
       </div>
-      <div className="absolute w-50 h-50 bg-gradient-to-bl from-tealGreen from-50% to-charcoalGray to-60% blur-400 rounded-full -top-64 -right-14 -z-1"></div>
 
-      {/* Modals for Buy and Sell */}
+      {/* Floating icons using Iconify instead of SVG files */}
+      <div className="absolute left-[5%] top-[15%] opacity-20 hidden lg:block">
+        <Icon icon="ph:cube" className="text-primary text-7xl" />
+      </div>
+      
+      <div className="absolute right-[8%] bottom-[20%] opacity-20 hidden lg:block">
+        <Icon icon="ph:buildings" className="text-primary text-8xl" />
+      </div>
+
+      <div className="container mx-auto px-4 relative max-w-5xl">
+        {/* Main heading with animated underline */}
+        <div className="relative mb-6 pt-8">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="text-white text-center font-bold text-3xl md:text-4xl lg:text-5xl max-w-4xl mx-auto leading-tight tracking-tight"
+          >
+            Secure Your <span className="text-primary relative">View Rights
+              <span className="absolute bottom-2 left-0 w-full h-1 bg-primary/30 rounded-full"></span>
+            </span> with the Power of <span className="text-primary relative">Blockchain
+              <span className="absolute bottom-2 left-0 w-full h-1 bg-primary/30 rounded-full"></span>
+            </span>
+          </motion.h1>
+        </div>
+
+        {/* Subtitle with character-by-character typing animation */}
+        <motion.div
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          className="text-muted text-center mt-6 mb-10 max-w-2xl mx-auto text-base h-20 md:h-16"
+        >
+          <TypewriterEffect text="The first marketplace to tokenize, buy, and sell property air rights, ensuring your views remain unobstructed and your property value protected." />
+        </motion.div>
+
+        {/* CTA Buttons with enhanced styling */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex flex-wrap justify-center gap-6 mt-10 mb-16"
+        >
+          <button
+            onClick={() => setIsBuyingOpen(true)}
+            className="bg-primary hover:bg-primary/90 border border-primary rounded-lg text-lg font-medium text-darkmode py-3 px-8 transition-all duration-300 flex items-center shadow-glow-sm hover:shadow-glow"
+          >
+            <Icon icon="ph:shopping-cart" className="mr-2 text-xl" /> Buy Air Rights
+          </button>
+          <button
+            onClick={() => setIsSellingOpen(true)}
+            className="bg-transparent hover:bg-primary/10 border border-primary rounded-lg text-lg font-medium text-primary py-3 px-8 transition-all duration-300 flex items-center"
+          >
+            <Icon icon="ph:buildings" className="mr-2 text-xl" /> List Property
+          </button>
+        </motion.div>
+
+        {/* Feature cards with enhanced styling */}
+        <motion.div 
+          variants={staggerChildren}
+          initial="initial"
+          animate="animate"
+          className="grid md:grid-cols-3 gap-6 mt-12 mb-16"
+        >
+          <motion.div 
+            variants={fadeIn}
+            className="bg-darkmode/50 backdrop-blur-md border border-dark_border/20 rounded-xl p-8 flex flex-col items-center text-center hover:border-primary/30 transition-all duration-300"
+          >
+            <div className="bg-primary/20 p-5 rounded-full mb-6">
+              <Icon icon="ph:shield-check" className="text-primary text-3xl" />
+            </div>
+            <h3 className="text-white text-xl font-medium mb-4">Secure Ownership</h3>
+            <p className="text-muted text-base">Blockchain-verified ownership of air rights with legal backing and immutable records</p>
+          </motion.div>
+          
+          <motion.div 
+            variants={fadeIn}
+            className="bg-darkmode/50 backdrop-blur-md border border-dark_border/20 rounded-xl p-8 flex flex-col items-center text-center hover:border-primary/30 transition-all duration-300"
+          >
+            <div className="bg-primary/20 p-5 rounded-full mb-6">
+              <Icon icon="ph:currency-circle-dollar" className="text-primary text-3xl" />
+            </div>
+            <h3 className="text-white text-xl font-medium mb-4">Value Protection</h3>
+            <p className="text-muted text-base">Protect and increase your property value by securing view rights for generations to come</p>
+          </motion.div>
+          
+          <motion.div 
+            variants={fadeIn}
+            className="bg-darkmode/50 backdrop-blur-md border border-dark_border/20 rounded-xl p-8 flex flex-col items-center text-center hover:border-primary/30 transition-all duration-300"
+          >
+            <div className="bg-primary/20 p-5 rounded-full mb-6">
+              <Icon icon="ph:handshake" className="text-primary text-3xl" />
+            </div>
+            <h3 className="text-white text-xl font-medium mb-4">Easy Trading</h3>
+            <p className="text-muted text-base">Seamless marketplace for buying and selling air rights with transparent pricing</p>
+          </motion.div>
+        </motion.div>
+
+        {/* 3D Visualization */}
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="mt-16 relative"
+        >
+          <div className="relative mx-auto max-w-5xl">
+            <Image
+              src="/images/hero/banner-image.png"
+              alt="Air Rights Visualization"
+              width={1150}
+              height={650}
+              className="rounded-xl shadow-2xl"
+              priority
+            />
+            
+            {/* Overlay elements */}
+            <div className="absolute top-1/4 left-1/4 bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm animate-pulse">
+              <span className="flex items-center">
+                <Icon icon="ph:building-bold" className="mr-2" /> View Protected
+              </span>
+            </div>
+            
+            <div className="absolute bottom-1/3 right-1/4 bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm animate-pulse delay-300">
+              <span className="flex items-center">
+                <Icon icon="ph:currency-circle-dollar" className="mr-2" /> $582.24/sq.ft
+              </span>
+            </div>
+            
+            <div className="absolute top-1/2 right-[20%] bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm animate-pulse delay-600">
+              <span className="flex items-center">
+                <Icon icon="ph:eye" className="mr-2" /> Unobstructed View
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Modals for Buy and Sell with improved styling */}
       {isBuying && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
             ref={BuyRef}
-            className="relative w-full max-w-md overflow-hidden rounded-lg px-8 pt-14 pb-8 z-999 text-center bg-dark_grey bg-opacity-90 backdrop-blur-md"
+            className="relative w-full max-w-md overflow-hidden rounded-xl p-8 z-999 text-center bg-gradient-to-br from-dark_grey to-darkmode/90 backdrop-blur-md border border-dark_border/30 shadow-2xl"
           >
             <button
               onClick={() => setIsBuyingOpen(false)}
-              className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
+              className="absolute top-4 right-4 text-white hover:text-primary transition-colors"
               aria-label="Close Buy Modal"
             >
-              <Icon
-                icon="tabler:currency-xrp"
-                className="text-white hover:text-primary text-24 inline-block me-2"
-              />
+              <Icon icon="ph:x-circle" className="text-2xl" />
             </button>
             <BuyCrypto />
-          </div>
+          </motion.div>
         </div>
       )}
+
       {isSelling && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div
+        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
             ref={SellRef}
-            className="relative w-full max-w-md overflow-hidden rounded-lg px-8 pt-14 pb-8 z-999 text-center bg-dark_grey bg-opacity-90 backdrop-blur-md"
+            className="relative w-full max-w-md overflow-hidden rounded-xl p-8 z-999 text-center bg-gradient-to-br from-dark_grey to-darkmode/90 backdrop-blur-md border border-dark_border/30 shadow-2xl"
           >
             <button
               onClick={() => setIsSellingOpen(false)}
-              className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
+              className="absolute top-4 right-4 text-white hover:text-primary transition-colors"
               aria-label="Close Sell Modal"
             >
-              <Icon
-                icon="tabler:currency-xrp"
-                className="text-white hover:text-primary text-24 inline-block me-2"
-              />
+              <Icon icon="ph:x-circle" className="text-2xl" />
             </button>
             <SellCrypto />
-          </div>
+          </motion.div>
         </div>
       )}
+      
+      {/* Add these custom animations to your global CSS */}
+      <style jsx global>{`
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.7; }
+          50% { opacity: 0.3; }
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 8s ease-in-out infinite;
+        }
+        
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        
+        .shadow-glow {
+          box-shadow: 0 0 15px rgba(var(--color-primary-rgb), 0.3);
+        }
+        
+        .shadow-glow-sm {
+          box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.2);
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+        
+        .delay-300 {
+          animation-delay: 0.3s;
+        }
+        
+        .delay-600 {
+          animation-delay: 0.6s;
+        }
+        
+        .cursor-blink {
+          display: inline-block;
+          margin-left: 1px;
+          animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink {
+          from, to { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
     </section>
+  );
+};
+
+const TypewriterEffect = ({ text }: { text: string }) => {
+  const [displayText, setDisplayText] = useState("");
+  
+  useEffect(() => {
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      if (i < text.length) {
+        setDisplayText(text.substring(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 30);
+    
+    return () => clearInterval(typingInterval);
+  }, [text]);
+  
+  return (
+    <p className="relative inline-block">
+      {displayText}
+      <span className="cursor-blink">|</span>
+    </p>
   );
 };
 
