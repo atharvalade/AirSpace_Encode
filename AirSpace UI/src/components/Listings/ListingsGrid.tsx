@@ -18,6 +18,32 @@ const BUYER_DETAILS = {
   name: "Eddie Murphy"
 };
 
+// Define interface for the API response
+interface ApiNFT {
+  tokenId: number;
+  ipfsHash: string;
+  metadata: {
+    title: string;
+    name: string;
+    description: string;
+    attributes: {
+      trait_type: string;
+      value: string | number;
+    }[];
+    properties: {
+      coordinates: {
+        latitude: number;
+        longitude: number;
+      }
+    }
+  }
+}
+
+interface ApiResponse {
+  data: ApiNFT[];
+  wallet: string;
+}
+
 export const ListingsGrid = () => {
   const [listings, setListings] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,46 +60,35 @@ export const ListingsGrid = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch listings');
         }
-        const data = await response.json();
+        const apiResponse: ApiResponse = await response.json();
         
-        // Transform the API data to match our NFT interface
-        const formattedListings = data.data.map((item: any) => {
-          // Find property address, current height, max height, and price from attributes
-          const propertyAddress = item.metadata.attributes.find(
-            (attr: any) => attr.trait_type === "Property Address"
-          )?.value || "";
-          
-          const currentHeight = item.metadata.attributes.find(
-            (attr: any) => attr.trait_type === "Current Height"
-          )?.value || 0;
-          
-          const maxHeight = item.metadata.attributes.find(
-            (attr: any) => attr.trait_type === "Maximum Height"
-          )?.value || 0;
-          
-          const availableFloors = item.metadata.attributes.find(
-            (attr: any) => attr.trait_type === "Available Floors"
-          )?.value || 0;
-          
-          const price = item.metadata.attributes.find(
-            (attr: any) => attr.trait_type === "Price"
-          )?.value || 0;
+        // Transform API data to match our NFT interface
+        const transformedListings: NFT[] = apiResponse.data.map(item => {
+          // Find attributes by trait_type
+          const getAttributeValue = (traitType: string) => {
+            const attr = item.metadata.attributes.find(a => a.trait_type === traitType);
+            return attr ? String(attr.value) : '';
+          };
           
           return {
-            token_id: item.tokenId.toString(),
+            id: item.tokenId,
+            token_id: item.tokenId,
             title: item.metadata.title,
+            name: item.metadata.name,
             description: item.metadata.description,
-            property_address: propertyAddress,
-            current_height: `${currentHeight} floors`,
-            maximum_height: `${maxHeight} floors`,
-            available_floors: `${availableFloors} floors`,
-            price: price.toLocaleString(),
-            contract_address: "0x1234567890abcdef1234567890abcdef12345678",
+            property_address: getAttributeValue('Property Address'),
+            current_height: `${getAttributeValue('Current Height')} floors`,
+            maximum_height: `${getAttributeValue('Maximum Height')} floors`,
+            available_floors: `${getAttributeValue('Current Height')}-${getAttributeValue('Maximum Height')} floors`,
+            price: getAttributeValue('Price').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            latitude: item.metadata.properties.coordinates.latitude,
+            longitude: item.metadata.properties.coordinates.longitude,
+            contract_address: "0x1234567890abcdef1234567890abcdef12345678", // Placeholder
             image_url: getListingImage(item.metadata.title)
           };
         });
         
-        setListings(formattedListings);
+        setListings(transformedListings);
       } catch (err) {
         console.error('Error fetching listings:', err);
         setError(err instanceof Error ? err.message : 'Failed to fetch listings');
@@ -176,7 +191,7 @@ ${BUYER_DETAILS.name}
                 alt={listing.title}
                 fill
                 className="object-cover rounded-2xl"
-                priority={String(listing.token_id) === "1"}
+                priority={listing.token_id === 1}
               />
             </div>
             <div className="flex flex-col justify-between">
@@ -206,7 +221,7 @@ ${BUYER_DETAILS.name}
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-muted text-16">Price</p>
-                  <p className="text-primary text-32">{listing.price} USDC</p>
+                  <p className="text-primary text-32">${listing.price} USDC</p>
                 </div>
                 <button 
                   className="bg-primary text-darkmode px-8 py-3 rounded-lg text-18 font-medium hover:bg-opacity-90 transition-all"
