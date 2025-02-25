@@ -6,6 +6,72 @@ import BuyCrypto from "./buy-form";
 import SellCrypto from "./sell-form";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import dynamic from 'next/dynamic';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+// Dynamically import the map component with no SSR
+const MapComponent = dynamic(() => import('@/components/Home/Hero/map-component').then(mod => mod.default), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[500px] rounded-xl bg-darkmode/50 flex items-center justify-center">
+      <div className="text-white">Loading 3D Map...</div>
+    </div>
+  )
+}) as any;  // Add type assertion to avoid TypeScript error
+
+// Sample building data with air rights information
+const SAMPLE_BUILDINGS = [
+  {
+    id: 1,
+    name: "Empire State Building",
+    coordinates: [-73.9857, 40.7484],
+    height: 381,
+    pricePerSqFt: 582.24,
+    availableSqFt: 15000,
+    airRightsVolume: 250000,
+    viewProtected: true
+  },
+  {
+    id: 2,
+    name: "Chrysler Building",
+    coordinates: [-73.9755, 40.7516],
+    height: 319,
+    pricePerSqFt: 495.50,
+    availableSqFt: 12000,
+    airRightsVolume: 180000,
+    viewProtected: false
+  },
+  {
+    id: 3,
+    name: "One World Trade Center",
+    coordinates: [-74.0133, 40.7127],
+    height: 541,
+    pricePerSqFt: 625.75,
+    availableSqFt: 18500,
+    airRightsVolume: 320000,
+    viewProtected: true
+  },
+  {
+    id: 4,
+    name: "30 Hudson Yards",
+    coordinates: [-74.0023, 40.7539],
+    height: 395,
+    pricePerSqFt: 548.30,
+    availableSqFt: 14200,
+    airRightsVolume: 210000,
+    viewProtected: false
+  },
+  {
+    id: 5,
+    name: "Bank of America Tower",
+    coordinates: [-73.9845, 40.7557],
+    height: 366,
+    pricePerSqFt: 567.80,
+    availableSqFt: 13800,
+    airRightsVolume: 195000,
+    viewProtected: true
+  }
+];
 
 const Hero = () => {
   const [isBuying, setIsBuyingOpen] = useState(false);
@@ -158,42 +224,14 @@ const Hero = () => {
           </motion.div>
         </motion.div>
 
-        {/* 3D Visualization */}
+        {/* 3D Map Visualization - replacing the static image */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
           className="mt-16 relative"
         >
-          <div className="relative mx-auto max-w-5xl">
-            <Image
-              src="/images/hero/banner-image.png"
-              alt="Air Rights Visualization"
-              width={1150}
-              height={650}
-              className="rounded-xl shadow-2xl"
-              priority
-            />
-            
-            {/* Overlay elements */}
-            <div className="absolute top-1/4 left-1/4 bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm animate-pulse">
-              <span className="flex items-center">
-                <Icon icon="ph:building-bold" className="mr-2" /> View Protected
-              </span>
-            </div>
-            
-            <div className="absolute bottom-1/3 right-1/4 bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm animate-pulse delay-300">
-              <span className="flex items-center">
-                <Icon icon="ph:currency-circle-dollar" className="mr-2" /> $582.24/sq.ft
-              </span>
-            </div>
-            
-            <div className="absolute top-1/2 right-[20%] bg-primary/20 backdrop-blur-sm p-3 rounded-lg border border-primary/30 text-white text-sm animate-pulse delay-600">
-              <span className="flex items-center">
-                <Icon icon="ph:eye" className="mr-2" /> Unobstructed View
-              </span>
-            </div>
-          </div>
+          <MapComponent buildings={SAMPLE_BUILDINGS} />
         </motion.div>
       </div>
 
@@ -289,6 +327,21 @@ const Hero = () => {
         @keyframes blink {
           from, to { opacity: 1; }
           50% { opacity: 0; }
+        }
+        
+        .mapboxgl-popup {
+          z-index: 10;
+        }
+        
+        .mapboxgl-popup-content {
+          padding: 0;
+          background: transparent;
+          border-radius: 12px;
+          box-shadow: none;
+        }
+        
+        .mapboxgl-popup-tip {
+          display: none;
         }
       `}</style>
     </section>
