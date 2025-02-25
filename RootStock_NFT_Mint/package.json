@@ -1,0 +1,25 @@
+{
+  "name": "rootstock-airspace-nft",
+  "version": "1.0.0",
+  "description": "AirSpace NFTs on Rootstock network - tokenizing air rights above prime real estate",
+  "scripts": {
+    "deploy": "hardhat run scripts/deploy.ts --network rsktestnet",
+    "mint": "hardhat run scripts/mint-and-view.ts --network rsktestnet",
+    "mint-all": "hardhat run scripts/mint-all.ts --network rsktestnet",
+    "read": "hardhat run scripts/read-metadata.ts --network rsktestnet"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@openzeppelin/contracts": "^4.9.0",
+    "@pinata/sdk": "^2.1.0",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.22.18"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  }
+}
